@@ -1,7 +1,8 @@
 You've heard of terrible, incredibly niche tools, now get ready for to.rc!
 
 Run to.rc from OSS with the command: ENV=to.rc sh
-t
+
+
 to.rc is a sort of cousin to my tool Orc, but far less useful or interesting.
 It's designed for people who may occasionally do Tandem/HP NonStop audits.
 You'll still have to do most of the stuff by hand, because I'm lazy, and also
