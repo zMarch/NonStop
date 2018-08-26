@@ -1,0 +1,84 @@
+#!/bin/sh
+#to.rc
+#nobody expects the tandem inquisition
+USERS=""
+
+users() {
+echo "Listing users..."
+USERS=$(gtacl -cv 'users *.*' | grep '\ \ ' | grep ',')
+echo "$USERS"
+if echo "$USERS" | grep -i NULL | tr -d ' ' | grep -qi NULL.NULL; then
+echo ""
+echo "[!] NULL.NULL default read-only account is present."
+fi
+}
+
+ossinfo() {
+echo "uname: `uname -a`"
+echo "Our user: `id`"
+echo "Process: `tty`"
+ps -ef
+}
+
+listnodes() {
+echo "Checking if we connect to other Tandems..."
+EXPAND=$(ls -g /E/ | grep "^d" | awk -F ' ' '{print $8}')
+if echo "$EXPAND" | grep -q "."; then
+	echo "[!] Other nodes that are available via EXPAND: $EXPAND"
+fi;
+}
+
+netstat() {
+echo "Doing the equivalent of a netstat..."
+gtacl -cv 'scf listopens proc $ztcp1,detail'
+}
+
+procinfo() {
+gtacl -cv "#processinfo / logonname,osspathname,processid / $1" | tail -n2 | head -n1
+}
+
+blankpass() {
+echo "Don't run this as SUPER.SUPER."
+if echo $USERS | grep -q "."; then
+	UARRAY=$(echo $users | awk -F '.' '{print $1" "$2}' | awk -F ' ' '{print $1"."$2}')
+else
+	UARRAY=$(gtacl -cv 'users *.*' | grep "\ \ " | grep "," | awk -F '.' '{print $1" "$2}' | awk -F ' ' '{print $1"."$2}')
+fi
+echo "$UARRAY" | while read i;do
+CHPASS=$(gtacl -cv "#changeuser $i" | tail -n2 | head -n1)
+if echo "$CHPASS" | grep -q "1"; then
+echo "$i has a blank password."
+fi
+done
+}
+
+gettaclconf(){
+gtacl -cv '#getconfiguration / nochangeuser,remotesuperid /'
+}
+
+getinfo() {
+ARG=$1
+if echo "$ARG" | grep -vi "\/g\/"; then
+echo "Use the full path to the Guardian filesystem."
+echo "Guardian lives in /G/."
+else
+FPATH=$(echo "$ARG" | tr a-z A-Z| sed 's/\/G\//\$/' | sed 's/\//./g')
+gtacl -cv "FUP INFO $FPATH, detail" 
+fi
+}
+
+torchelp() {
+echo "[*] users - lists users"
+echo "[*] ossinfo - gets some useful info from OSS"
+echo "[*] getinfo [file] - gets file info from FUP. Arg is full OSS path, eg /G/system/system/userax"
+echo "[*] procinfo [cpu id,pin] - gets user, oss process name or process id from #processinfo builtin."
+echo "[*] listnodes - checks if there are any Tandem machines connected to us via EXPAND."
+echo "[*] netstat - does a verbose netstat"
+echo "[*] gettaclconf - checks for nochangeuser remotesuperid. 0 and -1 are the desired output."
+echo "[*] blankpass - checks to see if any users have no password via the #changeuser builtin."
+}
+
+echo "============================"
+echo "===== Welcome to Torc! ====="
+echo "Run torchelp to see a list of commands."
+
