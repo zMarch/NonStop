@@ -67,10 +67,17 @@ gtacl -cv "FUP INFO $FPATH, detail"
 fi
 }
 
+getuserax() {
+if id | grep -qi "SUPER.SUPER"; then
+gtacl -cv 'FUP COPY $SYSTEM.SYSTEM.USERAX,,SHARE,A'
+fi 
+}
+
 torchelp() {
 echo "[*] users - lists users"
 echo "[*] ossinfo - gets some useful info from OSS"
 echo "[*] getinfo [file] - gets file info from FUP. Arg is full OSS path, eg /G/system/system/userax"
+echo "[*] getuserax - if you're super.super, reads the userax file, the NonStop version of /etc/shadow" 
 echo "[*] procinfo [cpu id,pin] - gets user, oss process name or process id from #processinfo builtin."
 echo "[*] listnodes - checks if there are any Tandem machines connected to us via EXPAND."
 echo "[*] netstat - does a verbose netstat"
