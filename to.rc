@@ -3,6 +3,11 @@
 #nobody expects the tandem inquisition
 USERS=""
 
+getsubnet() {
+echo "Doing an ipconfig..."
+gtacl -cv 'scf info subnet,$ztcp1.*,detail'
+}
+
 getusers() {
 echo "Listing users..."
 USERS=$(gtacl -cv 'users *.*' | grep '\ \ ' | grep ',')
@@ -67,22 +72,23 @@ gtacl -cv "FUP INFO $FPATH, detail"
 fi
 }
 
-getuserax() {
+getuserid() {
 if id | grep -qi "SUPER.SUPER"; then
-gtacl -cv 'FUP COPY $SYSTEM.SYSTEM.USERAX,,SHARE,A'
+gtacl -cv 'FUP COPY $SYSTEM.SYSTEM.USERID,,SHARE,A'
 fi 
 }
 
 gethelp() {
 echo "[*] getusers - lists users"
 echo "[*] ossinfo - gets some useful info from OSS"
-echo "[*] getinfo [file] - gets file info from FUP. Arg is full OSS path, eg /G/system/system/userax"
-echo "[*] getuserax - if you're super.super, reads the userax file, the NonStop version of /etc/shadow" 
+echo "[*] getinfo [file] - gets file info from FUP. Arg is full OSS path, eg /G/system/system/userid"
+echo "[*] getuserid - if you're super.super, reads the userid file, the NonStop version of /etc/shadow" 
 echo "[*] procinfo [cpu id,pin] - gets user, oss process name or process id from #processinfo builtin."
 echo "[*] getnodes - checks if there are any Tandem machines connected to us via EXPAND."
 echo "[*] netstat - does a verbose netstat"
 echo "[*] gettaclconf - checks for nochangeuser remotesuperid. 0 and -1 are the desired output."
 echo "[*] blankpass - checks to see if any users have no password via the #changeuser builtin."
+echo "[*] getsubnet - roughly equivalent to ipconfig/ifconfig."
 }
 
 echo "============================"
