@@ -18,7 +18,7 @@ However, Torc will help with some basic checks:
 - netstat - does a verbose netstat
 - gettaclconf - checks for nochangeuser remotesuperid. 0 and -1 are the desired output.
 - blankpass - checks to see if any users have no password via the #changeuser builtin.
-- getroute
+- getroute - ipconfig, basically
 
 TODO:
 - enumerate all the $ZTCP files instead of just going for $ZTCP1
